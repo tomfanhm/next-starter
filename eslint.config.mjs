@@ -1,24 +1,33 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import nextPlugin from "@next/eslint-plugin-next";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import tseslint from "typescript-eslint";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({ baseDirectory: __dirname });
-
-const eslintConfig = [
-  ...compat.extends(
-    "next/core-web-vitals",
-    "next/typescript",
-    "plugin:@typescript-eslint/strict-type-checked",
-  ),
+const eslintConfig = tseslint.config(
+  {
+    ignores: [".next/", "node_modules/", "playwright-report/", "test-results/"],
+  },
+  ...tseslint.configs.strictTypeChecked,
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: [
+            "eslint.config.mjs",
+            "postcss.config.mjs",
+          ],
+        },
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
   {
     plugins: {
+      "@next/next": nextPlugin,
       "simple-import-sort": simpleImportSort,
     },
     rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs["core-web-vitals"].rules,
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
       "@typescript-eslint/no-unused-vars": [
@@ -35,9 +44,11 @@ const eslintConfig = [
       ],
     },
   },
+  // Disable type-checked rules for config files outside tsconfig — must be last
   {
-    ignores: [".next/", "node_modules/", "playwright-report/", "test-results/"],
+    files: ["*.config.{ts,mjs}", "playwright.config.ts"],
+    ...tseslint.configs.disableTypeChecked,
   },
-];
+);
 
 export default eslintConfig;

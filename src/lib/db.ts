@@ -11,10 +11,3 @@ export function getDb(): PrismaClient {
   }
   return _db;
 }
-
-// For convenience in server code
-export const db = new Proxy({} as PrismaClient, {
-  get(_target, prop) {
-    return Reflect.get(getDb(), prop);
-  },
-});

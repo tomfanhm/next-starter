@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { auth, signOut } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { auth, signOut } from "@/lib/auth";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
