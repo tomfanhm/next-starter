@@ -1,3 +1,6 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
 
@@ -10,7 +13,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": `${import.meta.dirname}/src`,
+      "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "src"),
     },
   },
 });
