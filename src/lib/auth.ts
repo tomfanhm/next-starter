@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
@@ -24,3 +26,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
 });
+
+// Deduplicate auth() calls within a single request (React `cache`).
+export const getSession = cache(auth);

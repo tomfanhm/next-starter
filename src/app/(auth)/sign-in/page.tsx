@@ -1,7 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth";
 
-export default function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}) {
+  const { callbackUrl = "/dashboard" } = await searchParams;
+
   return (
     <div className="mx-auto w-full max-w-sm space-y-6">
       <div className="text-center">
@@ -15,7 +21,7 @@ export default function SignInPage() {
         <form
           action={async () => {
             "use server";
-            await signIn("github", { redirectTo: "/dashboard" });
+            await signIn("github", { redirectTo: callbackUrl });
           }}
         >
           <Button className="w-full" type="submit">
@@ -26,7 +32,7 @@ export default function SignInPage() {
         <form
           action={async () => {
             "use server";
-            await signIn("google", { redirectTo: "/dashboard" });
+            await signIn("google", { redirectTo: callbackUrl });
           }}
         >
           <Button className="w-full" variant="outline" type="submit">

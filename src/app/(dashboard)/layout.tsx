@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { auth, signOut } from "@/lib/auth";
+import { getSession, signOut } from "@/lib/auth";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
+  const session = await getSession();
 
   return (
     <div className="min-h-screen">

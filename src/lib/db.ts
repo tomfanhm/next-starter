@@ -1,13 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 
-// Lazy singleton pattern — safe during `next build` static generation
-// when DATABASE_URL may not be available yet.
+// Attach to globalThis to survive HMR in development.
+// Lazy so `next build` doesn't crash when DATABASE_URL is absent.
 
-let _db: PrismaClient | null = null;
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
 
 export function getDb(): PrismaClient {
-  if (!_db) {
-    _db = new PrismaClient();
-  }
-  return _db;
+  globalForPrisma.prisma ??= new PrismaClient();
+  return globalForPrisma.prisma;
 }
